@@ -115,6 +115,7 @@ function graphResponse(){
 
 var boroughChart;
 function makeGraphs(recordsJson) {
+	
 	var records = recordsJson.features;
 	
 	// var dateFormat = d3.time.format("%d/%m/%Y");
@@ -225,7 +226,7 @@ function makeGraphs(recordsJson) {
 			var features = [];
 			allDim.top(Infinity).forEach(function (d) {
 				features.push(new ol.Feature({
-					'geometry': new ol.geom.Point(ol.proj.transform([d.geometry.coordinates[0], d.geometry.coordinates[1]],'EPSG:4326','EPSG:3857'))
+					'geometry': new ol.geom.Point(ol.proj.transform([d.geometry.coordinates[0], d.geometry.coordinates[1]],recordsJson.crs.properties.name,'EPSG:3857'))
 				}));
 			});
 			

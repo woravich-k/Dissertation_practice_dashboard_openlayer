@@ -91,6 +91,7 @@ app.get('/getPOI', function (req,res) {
 				res.status(400).send(err);
 				return;
 			}
+			
 			res.status(200).send(result.rows);
 		});
 	});
@@ -151,7 +152,27 @@ app.get('/getGeoJSON/:tablename/:geomcolumn',function(req,res){
 					res.status(400).send(err);
 					return;
 				}
-				res.status(200).send(result.rows);
+				var json = result.rows[0]
+				var querystring = "SELECT srid FROM public.geometry_columns where f_table_name = '"+req.params.tablename+"'"
+				client.query(querystring,function(err,result){
+					//call 'done' to release the client back to the pool
+					done();
+					if(err){
+						console.log(err);
+						res.status(400).send(err);
+						return;
+					}
+					console.log(result.rows[0]);
+					if (result.rows[0].srid != 0 || result.rows[0].srid != null){
+						json.crs = { "type": "name",
+											"properties": {
+												"name": "EPSG:" + result.rows[0].srid
+											}
+										 }
+					}
+					res.status(200).send(json);
+				});
+				
 				
 			});
 		});
